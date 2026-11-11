@@ -21,7 +21,7 @@ input{height:52px;border-radius:12px;border:1px solid #33486a;background:#09111f
 #st{min-height:20px;font-size:14px;color:#ffd54a;text-align:center}
 #rid2{font-size:26px;font-weight:900;letter-spacing:2px;text-align:center;color:#ffd54a;word-break:break-all;user-select:text;-webkit-user-select:text}
 #game{display:none}
-#hud{position:fixed;top:0;left:0;right:0;z-index:10;padding:calc(env(safe-area-inset-top) + 6px) 8px 6px}
+#hud{position:fixed;top:0;left:0;right:0;z-index:10;padding:calc(env(safe-area-inset-top) + 6px) 58px 6px 8px}
 .board{display:flex;align-items:center;gap:8px;background:#0a1222ee;border:1px solid #2a3c5c;border-radius:12px;padding:6px 10px;justify-content:space-between}
 .tm{display:flex;flex-direction:column;gap:2px;min-width:92px}
 .tm div{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:12px;padding:1px 6px;border-radius:6px;opacity:.55}
@@ -78,16 +78,26 @@ input{height:52px;border-radius:12px;border:1px solid #33486a;background:#09111f
 #ctl,#hint,#bctl{left:auto;top:70px;bottom:0;width:178px;height:auto;right:0;background:none;padding:6px 8px}
 #types,.mb,.gr{flex-direction:column}#go{min-height:52px}.board{padding:3px 8px}.tm b{font-size:18px}
 }
+#gb{position:fixed;top:calc(env(safe-area-inset-top) + 10px);right:10px;z-index:21;width:44px;height:44px;border-radius:22px;border:1px solid #3a5078;background:#0f1a2ecc;color:#ffd54a;font-size:22px;padding:0}
+#ub{right:64px}
+#sm{z-index:45;background:#050810f2;flex-direction:column;align-items:center;justify-content:flex-start;padding:calc(env(safe-area-inset-top) + 14px) 16px 24px;gap:8px;overflow:auto;-webkit-overflow-scrolling:touch}
+#sm h2{margin:6px 0;font-size:22px}
+#sm .rw{width:100%;max-width:380px;min-height:52px;flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#0f1a2ecc;border:1px solid #26364f;border-radius:14px;padding:6px 14px;font-size:15px;font-weight:700}
+#sm .rw span{flex:1}
+#sm .rw button{min-width:60px;min-height:44px;border-radius:12px;border:2px solid #33486a;background:#111c30;color:#cfe0ff;font-size:14px;font-weight:800;padding:0 10px}
+#sm .rw button.sel{border-color:#37e08a;background:#10331f;color:#fff}
+#sm input[type=range]{height:30px;width:140px;padding:0;border:0;background:none}
+#sm>.btn{width:100%;max-width:380px;flex:none}
 </style></head><body>
 <div id="lobby" class="scr on">
  <button id="ub">更新情報</button>
- <h1>P2P BASEBALL</h1><div class="sub">リアルタイム1打席勝負・オンライン対戦 v6</div>
+ <h1>P2P BASEBALL</h1><div class="sub">リアルタイム1打席勝負・オンライン対戦 v7</div>
  <div class="card" id="c1">
   <input id="nm" placeholder="あなたの名前（6文字まで）" maxlength="6" autocomplete="off">
   <div style="text-align:center;font-size:13px;opacity:.7">あなたの投手を選択</div><div class="pk" id="pk"></div><div id="pinfo" style="text-align:center;font-size:12px;opacity:.75;min-height:30px"></div>
   <button class="btn pri" id="mk">ルームを作成</button>
   <div style="text-align:center;opacity:.5;font-size:12px">または</div>
-  <input id="rid" placeholder="5桁のルームID" inputmode="numeric" maxlength="5" autocomplete="off">
+  <input id="rid" placeholder="5桁のルームID" inputmode="numeric" autocomplete="off">
   <button class="btn grn" id="jn">IDで参加</button>
   <div style="text-align:center;opacity:.5;font-size:12px">または 1人で</div><div class="pk" id="cpu"><button data-l="0">CPU よわい</button><button data-l="1">CPU ふつう</button><button data-l="2">CPU つよい</button></div>
  </div>
@@ -97,6 +107,7 @@ input{height:52px;border-radius:12px;border:1px solid #33486a;background:#09111f
   <button class="btn" id="cp">📋 IDをコピー</button>
   <a class="btn line" id="ln" target="_blank" rel="noopener">LINEで送る</a>
   <div style="text-align:center;font-size:14px">相手の接続を待っています…</div>
+  <button class="btn" id="cx2">ルームを閉じる</button>
  </div>
  <div id="st"></div>
 </div>
@@ -116,8 +127,10 @@ input{height:52px;border-radius:12px;border:1px solid #33486a;background:#09111f
  <div id="hint"></div>
  <div id="bctl"><div class="sr"><button data-s="0" class="sel">右打ち</button><button data-s="1">左打ち</button></div><div class="mb"><button data-m="0" class="sel">ミート<small>当てやすい・ヒット向き</small></button><button data-m="1">パワー<small>ホームラン狙い</small></button></div></div>
 </div>
+<button id="gb">⚙</button><div id="sm" class="scr"></div>
 <div id="cm" class="scr"></div>
 <div id="um" class="scr"><h2 style="margin:0;font-size:22px">更新情報</h2><div class="bd">
+<h3>v7</h3><ul><li>右上の ⚙ に設定画面を追加（応援歌・効果音・音量・バイブ・ホームラン演出・投球ゲージの速さ）</li><li>試合を途中でやめてロビーに戻れます（相手には退出が通知されます）</li><li>ルームIDの入力・接続を改善（全角数字・貼り付け対応、再接続、エラー表示）</li></ul>
 <h3>v6</h3><ul><li>投球のタイミングゲージを追加（ゲージが中央の緑のときに「投球！」を押すと球速UP。ズレると球速ダウンや制球ミス）</li><li>ピッチャーのモーションを細かく（脚上げ・踏み込み・腕のしなり・フォロースルー）</li><li>バッターのモーションを追加（構え・脚上げ・スイング・フォロースルー）</li></ul>
 <h3>v5</h3><ul><li>ホームラン演出を強化（バナー・花火・紙吹雪・画面の揺れ・ファンファーレ）</li><li>オリジナル応援歌（打席中に流れます。試合中の右上の🔊でON/OFF）</li><li>投手ごとの色が交代で変わり、攻撃側のユニフォーム色も変わります</li><li>投球モーション（振りかぶり→投球）を追加。球が離れる瞬間に合わせてスイングします</li></ul>
 <h3>v4</h3><ul><li>名前を登録でき、試合中に相手の名前が表示されます</li><li>右打ち／左打ちを試合中に選べます</li><li>投手交代（1チーム2回まで）</li><li>更新情報ボタンを追加</li></ul>
@@ -160,37 +173,55 @@ function mk(n){
   $('#ln').href='https://line.me/R/msg/text/?'+encodeURIComponent('野球で対戦しよう！\nルームID: '+id+url);
   $('#cp').onclick=()=>copy(id);
  });
- peer.on('error',e=>{if(e.type==='unavailable-id'&&n<5)mk(n+1);else status('エラー: '+e.type)});
+ peer.on('error',e=>{if(e.type==='unavailable-id'&&n<5)mk(n+1);else status(errMsg(e))});
  peer.on('connection',c=>{
-  if(conn)return;conn=c;
-  c.on('data',onData);c.on('close',lost);
+  if(started)return;
+  if(conn){try{conn.close()}catch(e){}}
+  conn=c;c.on('data',onData);c.on('close',()=>{if(!started)conn=null;else lost()});
  });
+ peer.on('disconnected',()=>{try{peer.reconnect()}catch(e){}});
 }
 function copy(t){
  const ok=()=>{$('#cp').textContent='✅ コピーしました';setTimeout(()=>$('#cp').textContent='📋 IDをコピー',1800)};
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,()=>fb());else fb();
  function fb(){const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();i.setSelectionRange(0,99);try{document.execCommand('copy');ok()}catch(e){}i.remove()}
 }
-$('#jn').onclick=()=>{getName();
- const id=$('#rid').value.trim();if(!/^\d{5}$/.test(id))return status('5桁の数字のIDを入力してください');
- status('接続中…');isHost=false;my=1;
- peer=new Peer();
- peer.on('open',()=>{
-  conn=peer.connect('pbs'+id,{reliable:true});
-  conn.on('data',onData);conn.on('close',lost);conn.on('error',()=>status('接続エラー'));conn.on('open',()=>send({t:'hello',p:myP,n:myN}));
-  setTimeout(()=>{if(phase==='lobby')status('接続できません。IDを確認してください')},10000);
+const errMsg=e=>e.type==='peer-unavailable'?'ルームが見つかりません。IDを確認してください（ホストが画面を閉じていると見つかりません）':['network','server-error','socket-error','socket-closed'].includes(e.type)?'ネットワークエラー。通信状態を確認してもう一度お試しください':'エラー: '+e.type;
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&peer&&peer.disconnected&&!peer.destroyed){try{peer.reconnect()}catch(e){}}});
+$('#cx2').onclick=()=>{try{peer&&peer.destroy()}catch(e){}location.reload()};
+let JA=0;
+$('#jn').onclick=()=>{
+ getName();
+ const mm=$('#rid').value.normalize('NFKC').match(/\d{5}/g),id=mm&&mm[mm.length-1];
+ if(!id)return status('5桁の数字のルームIDを入力してください');
+ const att=++JA;clearTimeout(window._jt);
+ if(peer){try{peer.destroy()}catch(e){}}conn=null;started=0;
+ status('接続中…（やり直すときは、もう一度「IDで参加」を押してください）');isHost=false;my=1;
+ const pr=new Peer();peer=pr;
+ const fail=t=>{if(att!==JA)return;status(t);try{pr.destroy()}catch(e){}};
+ window._jt=setTimeout(()=>{if(att===JA&&phase==='lobby')fail('接続できません。IDが正しいか、ホストの画面が開いているか確認してください')},15000);
+ pr.on('open',()=>{
+  if(att!==JA)return;
+  const cn=pr.connect('pbs'+id,{reliable:true});conn=cn;
+  cn.on('data',m=>{if(att!==JA)return;if(m.t==='start')clearTimeout(window._jt);onData(m)});
+  cn.on('close',()=>{if(att!==JA)return;if(phase==='lobby'){clearTimeout(window._jt);fail('接続が切れました。もう一度お試しください')}else lost()});
+  cn.on('error',()=>{if(att!==JA)return;clearTimeout(window._jt);fail('接続エラー。もう一度お試しください')});
+  let tries=0;const hello=()=>{if(att!==JA||phase!=='lobby'||tries++>8)return;send({t:'hello',p:myP,n:myN});setTimeout(hello,1500)};
+  cn.on('open',hello);
  });
- peer.on('error',e=>status('エラー: '+e.type));
+ pr.on('error',e=>{if(att!==JA)return;clearTimeout(window._jt);fail(errMsg(e))});
+ pr.on('disconnected',()=>{try{pr.reconnect()}catch(e){}});
 };
-function lost(){if(S&&S.over)return;over('接続切断','相手との接続が切れました')}
+function lost(){if(left||(S&&S.over))return;over('接続切断','相手との接続が切れました')}
 function onData(m){
  if(m.t==='start'){S=m.S;pit=m.pit;names=m.nm;showGame()}
- else if(m.t==='hello'){if(isHost&&!started){started=1;pit=[myP,m.p];names=[myN,String(m.n||'相手').slice(0,6)];S=init();send({t:'start',S,pit,nm:names});showGame()}}
+ else if(m.t==='hello'){if(isHost){if(!started){started=1;pit=[myP,m.p];names=[myN,String(m.n||'相手').slice(0,6)];S=init()}send({t:'start',S,pit,nm:names});if(!$('#game').classList.contains('on'))showGame()}}
  else if(m.t==='pitch'){if(isHost)doThrow(m.type,m.cell,m.g)}
  else if(m.t==='throw')startPitch(m);
  else if(m.t==='swing'){if(isHost)resolve(m.i)}
  else if(m.t==='res')showRes(m);
  else if(m.t==='stn')stn[m.i]=m.v;
+ else if(m.t==='leave'){left=1;if(!(S&&S.over))over('相手が退出しました','不戦勝です（試合は中断されました）')}
  else if(m.t==='chg'){pit[m.i]=m.p;chgN[m.i]++;info('相手が投手交代: '+PL[m.p].n);if(S)hudUpd()}
 }
 
@@ -227,7 +258,7 @@ function openChg(){
 function doChg(i){pit[my]=i;chgN[my]++;send({t:'chg',i:my,p:i});buildTypes();hudUpd();info('投手交代: '+PL[i].n)}
 function buildTypes(){const l=PL[pit[my]].p;if(!l.includes(selT))selT=l[0];const t=$('#types');t.innerHTML='';$('#ctl').style.borderTop='4px solid '+PL[pit[my]].c;l.forEach(i=>{const b=document.createElement('button');b.className='tb'+(i===selT?' sel':'');b.textContent=TY[i].n;b.onclick=()=>{selT=i;[...t.children].forEach(x=>x.classList.toggle('sel',x===b))};t.appendChild(b)})}
 document.querySelectorAll('.mb button[data-m]').forEach(b=>b.onclick=()=>{myMode=+b.dataset.m;document.querySelectorAll('.mb button[data-m]').forEach(x=>x.classList.toggle('sel',x===b))});
-const GP=1300,gp=n=>{const t=(n%GP)/GP;return t<.5?t*2:2-t*2};
+let GP=1300;const gp=n=>{const t=(n%GP)/GP;return t<.5?t*2:2-t*2};
 (function tgl(n){requestAnimationFrame(tgl);if(phase==='wait'&&S&&S.half!==my)$('#tgm').style.left='calc('+gp(n)*100+'% - 3px)'})(0);
 $('#go').onclick=()=>{
  if(phase!=='wait'||S.half===my)return;
@@ -275,15 +306,16 @@ $('#swing').addEventListener('pointerdown',e=>{
 let AC=null,sndOn=true,chG=null,chT=[],chOn=0;
 function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
 document.addEventListener('pointerdown',ac);
+let MG=null;function dst(){if(!MG){MG=AC.createGain();MG.gain.value=SET.vol/100;MG.connect(AC.destination)}return MG}
 const mf=n=>440*Math.pow(2,(n-69)/12);
-function tone(f,t0,d,type,v,dest,lp){const a=AC,o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(v,t0+.015);g.gain.setValueAtTime(v,t0+d*.75);g.gain.linearRampToValueAtTime(0,t0+d);let n=o;if(lp){const b=a.createBiquadFilter();b.type='lowpass';b.frequency.value=lp;o.connect(b);n=b}n.connect(g);g.connect(dest||a.destination);o.start(t0);o.stop(t0+d+.03)}
-function nz(t0,d,v,hp,dest){const a=AC,len=Math.floor(a.sampleRate*d),buf=a.createBuffer(1,len,a.sampleRate),ch=buf.getChannelData(0);for(let i=0;i<len;i++)ch[i]=(Math.random()*2-1)*(1-i/len);const s=a.createBufferSource();s.buffer=buf;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=hp;const g=a.createGain();g.gain.value=v;s.connect(f);f.connect(g);g.connect(dest||a.destination);s.start(t0)}
+function tone(f,t0,d,type,v,dest,lp){const a=AC,o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(v,t0+.015);g.gain.setValueAtTime(v,t0+d*.75);g.gain.linearRampToValueAtTime(0,t0+d);let n=o;if(lp){const b=a.createBiquadFilter();b.type='lowpass';b.frequency.value=lp;o.connect(b);n=b}n.connect(g);g.connect(dest||dst());o.start(t0);o.stop(t0+d+.03)}
+function nz(t0,d,v,hp,dest){const a=AC,len=Math.floor(a.sampleRate*d),buf=a.createBuffer(1,len,a.sampleRate),ch=buf.getChannelData(0);for(let i=0;i<len;i++)ch[i]=(Math.random()*2-1)*(1-i/len);const s=a.createBufferSource();s.buffer=buf;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=hp;const g=a.createGain();g.gain.value=v;s.connect(f);f.connect(g);g.connect(dest||dst());s.start(t0)}
 const CH=[[72,.5],[72,.5],[76,1],[79,1],[76,1],[74,.5],[74,.5],[77,1],[81,1],[77,1],[76,.5],[79,.5],[84,1],[83,.5],[81,.5],[79,1],[76,.5],[74,.5],[72,2],[0,1]];
 const LY=['ゆけゆけ NAME！','かっとばせー！','白い球を 空へ！','打て 打て 打て！'];
 function cheerOn(team){
- cheerOff();if(!sndOn||!ac())return;chOn=1;const nm=names[team]||'';
+ cheerOff();if(!sndOn||!SET.cheer||!ac())return;chOn=1;const nm=names[team]||'';
  const phrase=()=>{
-  if(!chOn)return;const a=AC,t0=a.currentTime+.05,B=.47,g=a.createGain();g.gain.value=.9;g.connect(a.destination);chG=g;
+  if(!chOn)return;const a=AC,t0=a.currentTime+.05,B=.47,g=a.createGain();g.gain.value=.9;g.connect(dst());chG=g;
   let t=t0;CH.forEach(([n,d])=>{if(n)tone(mf(n),t,d*B*.92,'sawtooth',.05,g,1900);t+=d*B});
   for(let i=0;i<16;i++){const tt=t0+i*B;if(i%2===0)tone(70,tt,.12,'sine',.22,g);else nz(tt,.07,.12,1800,g)}
   for(let b=0;b<4;b++)chT.push(setTimeout(()=>{if(chOn){const e=$('#cheer');e.textContent=LY[b].replace('NAME',nm);e.style.display='block'}},b*4*B*1000));
@@ -293,12 +325,40 @@ function cheerOn(team){
 }
 function cheerOff(){chOn=0;chT.forEach(clearTimeout);chT=[];$('#cheer').style.display='none';if(chG&&AC){try{chG.gain.cancelScheduledValues(AC.currentTime);chG.gain.setTargetAtTime(0,AC.currentTime,.04)}catch(e){}}chG=null}
 function fanfare(){
- if(!sndOn||!ac())return;const a=AC,t=a.currentTime+.02,g=a.createGain();g.gain.value=1;g.connect(a.destination);
+ if(!sndOn||!SET.sfx||!ac())return;const a=AC,t=a.currentTime+.02,g=a.createGain();g.gain.value=1;g.connect(dst());
  [[72,.15],[76,.15],[79,.15],[84,.45],[79,.15],[84,.7]].reduce((tt,[n,d])=>{tone(mf(n),tt,d,'sawtooth',.07,g,2600);tone(mf(n-12),tt,d,'square',.04,g,1200);return tt+d},t);
  nz(t,2.2,.10,900,g);
 }
-function jingle(k){if(!sndOn||!ac())return;const t=AC.currentTime+.01;if(k==='hit')[76,79,84].forEach((n,i)=>tone(mf(n),t+i*.09,.14,'square',.05));else tone(mf(55),t,.25,'triangle',.08)}
+function jingle(k){if(!sndOn||!SET.sfx||!ac())return;const t=AC.currentTime+.01;if(k==='hit')[76,79,84].forEach((n,i)=>tone(mf(n),t+i*.09,.14,'square',.05));else tone(mf(55),t,.25,'triangle',.08)}
 $('#snd').onclick=()=>{sndOn=!sndOn;$('#snd').textContent=sndOn?'🔊':'🔇';if(!sndOn)cheerOff();else if(S&&phase==='wait')cheerOn(S.half)};
+/* ---------- Settings / leave ---------- */
+const DEF={cheer:1,sfx:1,vib:1,fx:1,vol:80,gauge:1};let SET={...DEF},left=0;
+try{SET={...DEF,...JSON.parse(localStorage.getItem('pbset')||'{}')}}catch(e){}
+const saveSet=()=>{try{localStorage.setItem('pbset',JSON.stringify(SET))}catch(e){}};
+function applySet(){GP=[1900,1300,900][SET.gauge];if(MG)MG.gain.value=SET.vol/100}
+applySet();
+function leaveGame(){left=1;try{send({t:'leave'})}catch(e){}setTimeout(()=>{try{peer&&peer.destroy()}catch(e){}location.reload()},250)}
+function openSet(){
+ const m=$('#sm');m.innerHTML='<h2>⚙ 設定</h2>';
+ const row=(label,ctl)=>{const d=document.createElement('div');d.className='rw';const sp=document.createElement('span');sp.textContent=label;d.appendChild(sp);d.appendChild(ctl);m.appendChild(d)};
+ const tog=(k,after)=>{const b=document.createElement('button');const r=()=>{b.textContent=SET[k]?'ON':'OFF';b.className=SET[k]?'sel':''};r();b.onclick=()=>{SET[k]=SET[k]?0:1;saveSet();r();after&&after()};return b};
+ row('🎵 応援歌',tog('cheer',()=>{if(!SET.cheer)cheerOff()}));
+ row('🔔 効果音',tog('sfx'));
+ const v=document.createElement('input');v.type='range';v.min=0;v.max=100;v.value=SET.vol;v.oninput=()=>{SET.vol=+v.value;saveSet();applySet()};row('🔊 音量',v);
+ row('📳 バイブ',tog('vib'));
+ row('✨ ホームラン演出',tog('fx'));
+ const g=document.createElement('div');g.style.cssText='display:flex;gap:6px';
+ ['遅い','ふつう','速い'].forEach((t,i)=>{const b=document.createElement('button');b.textContent=t;b.style.minWidth='52px';b.className=SET.gauge===i?'sel':'';b.onclick=()=>{SET.gauge=i;saveSet();applySet();[...g.children].forEach((x,j)=>x.className=j===i?'sel':'')};g.appendChild(b)});
+ row('⏱ 投球ゲージ',g);
+ const nb=document.createElement('button');nb.textContent='開く';nb.onclick=()=>{m.classList.remove('on');$('#um').classList.add('on')};row('🆕 更新情報',nb);
+ if(phase!=='lobby'&&S){
+  const lv=document.createElement('button');lv.className='btn';lv.style.cssText='background:#8c1c2a;margin-top:6px';const t0='🚪 試合をやめてロビーへ';lv.textContent=t0;let ar=0;
+  lv.onclick=()=>{if(!ar){ar=1;lv.textContent='本当にやめる？（もう一度タップ）';setTimeout(()=>{ar=0;lv.textContent=t0},3000)}else leaveGame()};m.appendChild(lv);
+ }
+ const cl=document.createElement('button');cl.className='btn pri';cl.textContent='閉じる';cl.onclick=()=>m.classList.remove('on');m.appendChild(cl);
+ m.classList.add('on');
+}
+$('#gb').onclick=openSet;
 /* ---------- CPU ---------- */
 function botPitch(){
  if(!isBot||!S||S.over||S.half!==my)return;
@@ -402,7 +462,7 @@ function showRes(r){
  const el=$('#res');el.innerHTML='<div class="g '+cl+'">'+r.g+'</div><div class="t">'+r.text+'</div>';
  el.className=r.kind==='hr'?'hrr':'';el.style.display='block';
  cheerOff();if(r.kind==='hr'){boom();fanfare()}else if(r.kind==='hit')jingle('hit');else if(r.kind==='out')jingle('out');
- if(navigator.vibrate)navigator.vibrate(r.kind==='hr'?[60,40,140]:r.fl?30:0);
+ if(SET.vib&&navigator.vibrate)navigator.vibrate(r.kind==='hr'?[60,40,140]:r.fl?30:0);
  const id=r.id,wait=r.kind==='hr'?3800:r.fl?2100:1700;
  setTimeout(()=>{
   if(!P||P.rid!==id)return;el.style.display='none';
@@ -410,6 +470,7 @@ function showRes(r){
  },wait);
 }
 function boom(){
+ if(!SET.fx)return;
  const b=$('#hrb'),sp=b.firstChild;b.style.display='block';sp.textContent='HOME RUN!  '.repeat(6);sp.style.animation='none';void sp.offsetWidth;sp.style.animation='';setTimeout(()=>b.style.display='none',3300);
  shk=performance.now();
  const burst=(x,y,n)=>{const cl=['#ffd54a','#ff4d3c','#ff2fa0','#5ee6ff','#fff'];for(let i=0;i<n;i++){const a=Math.random()*6.283,v=2+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-2,l:1,c:cl[i%5]})}};
